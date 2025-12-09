@@ -101,7 +101,7 @@ public class SearchService {
             return null;
         });
     }
-
+    @CacheEvict(cacheNames = "search", allEntries = true)
     public Map<String, List<String>> fastGenerateAndSnapshot(Map<String, Long> increments, List<String> recent, int limit) {
         updateRedisBulkOnly(increments, recent);
         CompletableFuture.runAsync(() -> upsertDbBulk(increments));
