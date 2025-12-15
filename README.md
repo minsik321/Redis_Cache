@@ -226,7 +226,7 @@ public void clearAllCacheFast() {
 
 - Redis 데이터 삭제와 Spring Cache 삭제는 별개
 - Redis만 지우면 @Cacheable에 남은 오래된 데이터가 반환될 위험
-- @CacheEvict 추가로 두 저장소의 데이터 일관성 보장
+- @CacheEvict 추가로 두 저장소의 데이터 일관성 보장 ..
 
 ## 기술 스택
 
