@@ -4,6 +4,17 @@
 
 - 학습 목표: 원본 소스 분석 후 성능 개선, 구조 리팩터링, RESTful 개선 등을 적용하기
 
+- 아래는 이번 프로젝트에서 중점적으로 개선한 항목들입니다
+
+| 개선 항목                  | 기존 방식                                    | 개선 방식                     | 효과 / 장점                                             |
+| -------------------------- | -------------------------------------------- | ----------------------------- | ------------------------------------------------------- |
+| Redis 조회 방식            | 주기적 Polling                               | SSE 기반 이벤트 처리          | 불필요한 조회 제거, 실시간성 강화, 서버/Redis 부하 감소 |
+| TestDataController Mapping | POST + GET 혼용                              | POST 또는 RequestMapping 통합 | RESTful 규칙 준수, 코드 중복 제거                       |
+| JS 스크립트 처리           | addUserSearchKeyword + updatePopularKeywords | loadKeywords() 통합           | 사용자별 데이터 동기화, 코드 단순화, 유지보수성 향상    |
+| SearchService Redis 호출   | Redis 명령 4회 왕복                          | 파이프라인 1회 왕복           | 네트워크 왕복 감소, 성능 개선                           |
+| RedisConnection API        | 직렬화 직접 처리                             | opsForZSet / opsForList 사용  | 코드 간결화, 자동 직렬화, 유지보수 용이                 |
+| clearAllCacheFast()        | Redis만 삭제                                 | @CacheEvict 추가              | Redis와 Spring Cache 데이터 일관성 확보                 |
+
 <img width="643" height="887" alt="Image" src="https://github.com/user-attachments/assets/671180db-54eb-4112-9fbb-63a166f7d9ae" />
 
 [플로우 확인하기](https://github.com/user-attachments/files/24050884/B._.pdf)
@@ -32,16 +43,6 @@
 
 ## 프로젝트 개선 사항
 
-아래는 이번 프로젝트에서 중점적으로 개선한 항목들입니다
-
-| 개선 항목                  | 기존 방식                                    | 개선 방식                     | 효과 / 장점                                             |
-| -------------------------- | -------------------------------------------- | ----------------------------- | ------------------------------------------------------- |
-| Redis 조회 방식            | 주기적 Polling                               | SSE 기반 이벤트 처리          | 불필요한 조회 제거, 실시간성 강화, 서버/Redis 부하 감소 |
-| TestDataController Mapping | POST + GET 혼용                              | POST 또는 RequestMapping 통합 | RESTful 규칙 준수, 코드 중복 제거                       |
-| JS 스크립트 처리           | addUserSearchKeyword + updatePopularKeywords | loadKeywords() 통합           | 사용자별 데이터 동기화, 코드 단순화, 유지보수성 향상    |
-| SearchService Redis 호출   | Redis 명령 4회 왕복                          | 파이프라인 1회 왕복           | 네트워크 왕복 감소, 성능 개선                           |
-| RedisConnection API        | 직렬화 직접 처리                             | opsForZSet / opsForList 사용  | 코드 간결화, 자동 직렬화, 유지보수 용이                 |
-| clearAllCacheFast()        | Redis만 삭제                                 | @CacheEvict 추가              | Redis와 Spring Cache 데이터 일관성 확보                 |
 
 ### # Redis 조회 방식 개선 (Polling → SSE 기반 이벤트 처리)
 
